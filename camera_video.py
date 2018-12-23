@@ -1,16 +1,20 @@
 import cv2
 import sys
 import os
-from time import time
+from time import time, sleep
+from datetime import datetime
 
-d = datetime.datetime.now().isoformat()
-filename = str(d) + '.avi'
+
+
+d = datetime.now()
+filename = str(d)[21:26] + '.avi'
 
 cap = cv2.VideoCapture(0)
-fps = 30
+fps = 15
 
-size = (int(cap.get(cv2.cv.CV_CAP_PROP_FRAME_WIDTH)),int(cap.get(cv2.cv.CV_CAP_PROP_FRAME_HEIGHT)))
-writer = cv2.VideoWriter('output.avi', cv2.cv.CV_FOURCC('D', 'I', 'V', 'X'), fps, size)
+# 3:CV_CAP_PROP_FRAME_WIDTH  4:CV_CAP_PROP_FRAME_HEIGHT
+size = (int(cap.get(3)),int(cap.get(4)))
+writer = cv2.VideoWriter('output.avi', cv2.VideoWriter_fourcc('D', 'I', 'V', 'X'), fps, size)
 
 start = time()
 while (cap.isOpened()):
@@ -32,8 +36,11 @@ while (cap.isOpened()):
     else:
         break
 
-os.rename('output.avi','%s'%(filename))
-
+sleep(2)
 cap.release()
 writer.release()
+
+
+os.rename('output.avi','%s' % (filename))
+
 cv2.destroyAllWindows()
