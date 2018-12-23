@@ -5,42 +5,51 @@ from time import time, sleep
 from datetime import datetime
 
 
+class VideoCamera():
+    def __init__(self):
+        #self.frames = [open('./static/img/video' + num + '.avi', 'rb').read() for num in ['1', '2', '3', '4', '5', '6', '7']]
+        pass
 
-d = datetime.now()
-filename = str(d)[21:26] + '.avi'
+    def get_frame(self):
+        return self.frames[int(time()) % 7]
 
-cap = cv2.VideoCapture(0)
-fps = 15
+    def open_camera(self):
 
-# 3:CV_CAP_PROP_FRAME_WIDTH  4:CV_CAP_PROP_FRAME_HEIGHT
-size = (int(cap.get(3)),int(cap.get(4)))
-writer = cv2.VideoWriter('output.avi', cv2.VideoWriter_fourcc('D', 'I', 'V', 'X'), fps, size)
+        self.cap = cv2.VideoCapture(0)
+        size = (int(self.cap.get(3)),int(self.cap.get(4)))
 
-start = time()
-while (cap.isOpened()):
-    ret, frame = cap.read()
+        fps = 20
+        start = time()
 
-    if ret == True:
-        cv2.imshow('frame', frame)
+        for i in range(0, 3):
+            path = './static/img/video' + str(i) + '.avi'
+            writer = cv2.VideoWriter(path, cv2.VideoWriter_fourcc('D', 'I', 'V', 'X'), fps, size)
 
-        frame = cv2.resize(frame, (640, 480))
-        writer.write(frame)
+            start = time()
 
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
+            while True:
+                ret, frame = self.cap.read()
+                cv2.imshow('frame', frame)
 
-        end  = time()
-        if end - start >= 10:
-            break
+                frame = cv2.resize(frame, (640, 480))
+                writer.write(frame)
 
-    else:
-        break
+                end = time()
 
-sleep(2)
-cap.release()
-writer.release()
+                if int(end - start) >= 5:
+                    writer.release()
+                    break
+
+                if cv2.waitKey(1) & 0xFF == ord('q'):
+                    break
 
 
-os.rename('output.avi','%s' % (filename))
+        self.cap.release()
 
-cv2.destroyAllWindows()
+        cv2.destroyAllWindows()
+
+
+cam = VideoCamera()
+
+if __name__=='__main__':
+    cam.open_camera()
