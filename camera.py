@@ -11,18 +11,18 @@
 from time import time, sleep
 import cv2
 
-class Camera():    
+class Camera():
     def __init__(self):
-        self.cap = cv2.VideoCapture(0)
-        # self.frames = [open('./static/img/' + f + '.jpg', 'rb').read() for f in ['1', '2', '3', '4', '5', '6', '7']]
         self.frames = [open('./static/img/img' + num + '.jpg', 'rb').read() for num in ['1', '2', '3', '4', '5', '6', '7']]
         
     def get_frame(self):
-        # self.open_camera()
+        # cnt = self.open_camera()
+        # self.frames = [open('./static/img/img' + str(f) + '.jpg', 'rb').read() for f in range(0,7)]
         return self.frames[int(time()) % 7]
     
     def open_camera(self):
-
+        self.cap = cv2.VideoCapture(0)
+        
         cnt = 0
 
         while True:
@@ -45,7 +45,8 @@ class Camera():
 
         self.cap.release()
         cv2.destroyAllWindows()
-    
+
+        return cnt    
 
 cam = Camera()
 
