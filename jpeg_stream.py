@@ -3,7 +3,6 @@ from flask import Flask, render_template, Response
 
 # VideoCameraに変更
 from camera import VideoCamera 
-from time import sleep
 
 app = Flask(__name__)
 
@@ -13,7 +12,7 @@ def index():
 
 def generate(camera):
     while True:
-        frame = camera.get_frame()
+        frame=camera.get_frame()
         yield (b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
 @app.route('/feed')
